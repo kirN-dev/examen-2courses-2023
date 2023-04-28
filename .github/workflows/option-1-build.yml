@@ -1,0 +1,27 @@
+name: option1 - build
+
+on:
+  push:
+    branches: [ master ]
+    
+    paths:
+      - 'option-1/**'
+
+jobs:
+ 
+  build:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0
+    - name: Install dependencies
+      run: dotnet restore ./option-1/option1/option1.sln
+    - name: Build Debug
+      run: dotnet build ./option-1/option1/option1.sln --configuration Debug --no-restore
+    - name: Build Release
+      run: dotnet build ./option-1/option1/option1.sln --configuration Release --no-restore

@@ -1,0 +1,35 @@
+name: option1  - test
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'option-1/**'
+      
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        repository: kirn-dev/dotnet-examen-2course-tests
+    - uses: actions/checkout@v2
+      with:
+        path: tasks
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0
+    - name: Install dependencies for tasks
+      run: dotnet restore ./tasks/option-1/option1/option1.sln
+    - name: Build Debug
+      run: dotnet build ./tasks/option-1/option1/option1.sln --configuration Debug --no-restore -v:q
+    - name: Build Release
+      run: dotnet build ./tasks/option-1/option1/option1.sln --configuration Release --no-restore -v:q
+    - name: Install dependencies for tests
+      run: dotnet restore ./tests/option-1/option1.sln
+    - name: Build Tests
+      run: dotnet build ./tests/option-1/option1 --no-restore -v:q
+    - name: Tests
+      run: dotnet test ./tests/option-1/option1 --nologo --no-restore --no-build --logger "console;verbosity=detailed" -v:minimal
